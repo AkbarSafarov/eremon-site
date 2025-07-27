@@ -59,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
             link.addEventListener('click', function (e) {
                 e.preventDefault();
 
-                // Проверка: если скролл не уже выполняется
                 if (!document.scrollingElement._isScrolling) {
                     document.scrollingElement._isScrolling = true;
 
@@ -68,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         behavior: 'smooth'
                     });
 
-                    // Примерный таймаут, соответствующий 700мс (анимация)
                     setTimeout(() => {
                         document.scrollingElement._isScrolling = false;
                     }, 700);
@@ -117,11 +115,13 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        document.querySelector('.cookies-close').addEventListener('click', function (e) {
-            e.preventDefault();
-            const cookieBlock = this.closest('.cookie_block');
-            if (cookieBlock) cookieBlock.remove();
-        });
+        if(document.querySelector('.cookies-close')){
+            document.querySelector('.cookies-close').addEventListener('click', function (e) {
+                e.preventDefault();
+                const cookieBlock = this.closest('.cookie_block');
+                if (cookieBlock) cookieBlock.remove();
+            });
+        }
     }
 
     const similarSlider = document.querySelector('.ce_block_wr');
@@ -242,5 +242,50 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
+    }
+
+    const suntBlock = document.querySelector('.sunt_block_wr');
+
+    if(suntBlock){
+        const nameList = suntBlock.querySelectorAll('.left_list_name .name');
+        const imageList = suntBlock.querySelectorAll('.image_list .image');
+        const textList = suntBlock.querySelectorAll('.text_list .text');
+
+        function activeName(item, list) {
+            list.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+        }
+
+        nameList.forEach((name) => {
+            name.addEventListener('click', function(){
+                const dataName = name.getAttribute('data-name');
+
+                activeName(this, nameList);
+
+                imageList.forEach((image) => {
+                    const imageName = image.getAttribute('data-name');
+
+                    if(dataName === imageName) {
+                        activeName(image, imageList);
+                    }
+                });
+
+                textList.forEach((text) => {
+                    const textName = text.getAttribute('data-name');
+
+                    if(dataName === textName) {
+                        activeName(text, textList);
+                    }
+                })
+            })
+        })
+    }
+
+    const langBtn = document.querySelector('.dropdown-item-current');
+
+    if(langBtn){
+        langBtn.addEventListener('click', function(){
+            document.querySelector('.lang_block').classList.toggle('active');
+        })
     }
 })
