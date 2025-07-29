@@ -1,6 +1,3 @@
-
-
-
 document.addEventListener("DOMContentLoaded", function () {
 
     const body = document.body;
@@ -49,6 +46,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 closeMenu();
             }
         });
+
+        const menuAnchor = document.querySelectorAll('.anchor_menu li a');
+
+        if(menuAnchor) {
+            menuAnchor.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    closeMenu();
+
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        const targetOffsetTop = targetElement.offsetTop;
+
+                        window.scrollTo({
+                            top: targetOffsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
     }
 
 
@@ -75,28 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    const menuAnchor = document.querySelectorAll('.top_menu_header li a');
-
-    if(menuAnchor) {
-        menuAnchor.forEach(button => {
-            button.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-
-                if (targetElement) {
-                    const targetOffsetTop = targetElement.offsetTop;
-
-                    window.scrollTo({
-                        top: targetOffsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    }
-
+    
     if (document.cookie.indexOf('cookies_accepted=true') !== -1) {
         const cookieBlock = document.querySelector('.cookie_block');
         if (cookieBlock) cookieBlock.remove();
@@ -245,40 +246,67 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const suntBlock = document.querySelector('.sunt_block_wr');
-
     if(suntBlock){
         const nameList = suntBlock.querySelectorAll('.left_list_name .name');
         const imageList = suntBlock.querySelectorAll('.image_list .image');
         const textList = suntBlock.querySelectorAll('.text_list .text');
-
+        
         function activeName(item, list) {
             list.forEach(i => i.classList.remove('active'));
             item.classList.add('active');
         }
-
+        
+        function handleInteraction(name) {
+            const dataName = name.getAttribute('data-name');
+            activeName(name, nameList);
+            
+            imageList.forEach((image) => {
+                const imageName = image.getAttribute('data-name');
+                if(dataName === imageName) {
+                    activeName(image, imageList);
+                }
+            });
+            
+            textList.forEach((text) => {
+                const textName = text.getAttribute('data-name');
+                if(dataName === textName) {
+                    activeName(text, textList);
+                }
+            });
+        }
+        
         nameList.forEach((name) => {
-            name.addEventListener('click', function(){
-                const dataName = name.getAttribute('data-name');
-
-                activeName(this, nameList);
-
-                imageList.forEach((image) => {
-                    const imageName = image.getAttribute('data-name');
-
-                    if(dataName === imageName) {
-                        activeName(image, imageList);
-                    }
+            if (window.innerWidth > 940) {
+                name.addEventListener('mouseenter', function(){
+                    handleInteraction(this);
                 });
-
-                textList.forEach((text) => {
-                    const textName = text.getAttribute('data-name');
-
-                    if(dataName === textName) {
-                        activeName(text, textList);
-                    }
-                })
-            })
-        })
+            } else {
+                name.addEventListener('click', function(){
+                    handleInteraction(this);
+                });
+            }
+        });
+        
+        window.addEventListener('resize', function() {
+            nameList.forEach((name) => {
+                const newName = name.cloneNode(true);
+                name.parentNode.replaceChild(newName, name);
+            });
+            
+            const updatedNameList = suntBlock.querySelectorAll('.left_list_name .name');
+            
+            updatedNameList.forEach((name) => {
+                if (window.innerWidth > 940) {
+                    name.addEventListener('mouseenter', function(){
+                        handleInteraction(this);
+                    });
+                } else {
+                    name.addEventListener('click', function(){
+                        handleInteraction(this);
+                    });
+                }
+            });
+        });
     }
 
     const langBtn = document.querySelector('.dropdown-item-current');
