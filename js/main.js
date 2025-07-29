@@ -276,36 +276,42 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
         nameList.forEach((name) => {
+            const handler = function(){
+                handleInteraction(this);
+            };
+            name._handler = handler;
+            
             if (window.innerWidth > 940) {
-                name.addEventListener('mouseenter', function(){
-                    handleInteraction(this);
-                });
+                name.addEventListener('mouseenter', handler);
             } else {
-                name.addEventListener('click', function(){
-                    handleInteraction(this);
-                });
+                name.addEventListener('click', handler);
             }
         });
         
+        let currentEventType = window.innerWidth > 940 ? 'mouseenter' : 'click';
+        
         window.addEventListener('resize', function() {
-            nameList.forEach((name) => {
-                const newName = name.cloneNode(true);
-                name.parentNode.replaceChild(newName, name);
-            });
+            const newEventType = window.innerWidth > 940 ? 'mouseenter' : 'click';
             
-            const updatedNameList = suntBlock.querySelectorAll('.left_list_name .name');
-            
-            updatedNameList.forEach((name) => {
-                if (window.innerWidth > 940) {
-                    name.addEventListener('mouseenter', function(){
+            if (currentEventType !== newEventType) {
+                nameList.forEach((name) => {
+                    name.removeEventListener(currentEventType, name._handler);
+                });
+                
+                nameList.forEach(i => i.classList.remove('active'));
+                imageList.forEach(i => i.classList.remove('active'));
+                textList.forEach(i => i.classList.remove('active'));
+                
+                nameList.forEach((name) => {
+                    const handler = function(){
                         handleInteraction(this);
-                    });
-                } else {
-                    name.addEventListener('click', function(){
-                        handleInteraction(this);
-                    });
-                }
-            });
+                    };
+                    name._handler = handler;
+                    name.addEventListener(newEventType, handler);
+                });
+                
+                currentEventType = newEventType;
+            }
         });
     }
 
@@ -315,5 +321,14 @@ document.addEventListener("DOMContentLoaded", function () {
         langBtn.addEventListener('click', function(){
             document.querySelector('.lang_block').classList.toggle('active');
         })
+
+
+        document.addEventListener('click', function(e) {
+            if (
+                !document.querySelector('.lang_block').contains(e.target) 
+            ) {
+                document.querySelector('.lang_block').classList.remove('active');
+            }
+        });
     }
 })

@@ -515,10 +515,22 @@ img, textarea, input, table {
     transition: all 0.3s;
     opacity: 0;
     visibility: hidden;
-    background: #1d1d1b;
+    background: rgba(29,29,27, .9);
+    backdrop-filter: blur(10px);
     font-size: 0;
     opacity: 0;
-    box-shadow: 0 0 0 6000px rgba(0,0,0, .8);
+    //box-shadow: 0 0 0 6000px rgba(0,0,0, .8);
+
+    &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -3000px;
+        right: 100%;
+        background: rgba(0,0,0, .8);
+        backdrop-filter: blur(10px);
+    }
 
     &.opened {    
         opacity: 1;
@@ -553,7 +565,7 @@ img, textarea, input, table {
             list-style: none;
 
             > li {
-                padding: 2px 0;
+                padding: 8px 0;
                
 
                 > a {
@@ -929,7 +941,7 @@ img, textarea, input, table {
             }
 
             .lang_block {
-                display: none;
+                margin-right: 16px;
             }
         }
     }
@@ -2417,7 +2429,11 @@ img, textarea, input, table {
     }
 
     @media all and (max-width: 1024px) {
-        display: none;
+        width: 36px;
+        height: 36px;
+        right: 10px;
+        bottom: 10px;
+        background-size: 10px;
     }
 }
 
